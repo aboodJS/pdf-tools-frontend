@@ -1,4 +1,5 @@
 import type { Route } from "./+types/home";
+import ImageSendForm from "~/components/ImageSendForm";
 
 export function meta({}: Route.MetaArgs) {
   return [
@@ -8,5 +9,12 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <></>;
+  return (
+    <>
+      <main className="h-screen">
+        <h1 className="text-center my-8 text-4xl font-extrabold">pdf tools</h1>
+        <ImageSendForm></ImageSendForm>
+      </main>
+    </>
+  );
 }
