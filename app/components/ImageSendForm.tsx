@@ -1,29 +1,45 @@
 import { useState } from "react";
 
+function ErrorBox(isTrue: boolean, msg: String) {
+  if (isTrue) {
+    return <p>{msg}</p>;
+  }
+
+  return null;
+}
+
 function ImageSendForm() {
-  async function sendImages(event) {
-    const data = new FormData(event.target);
-    const req = await fetch("http://localhost:3000/convert", {
-      headers: { "Content-Type": "multipart/form-data" },
-      method: "POST",
-      body: data,
-    });
+  const [isError, setErrorState] = useState(false);
+  const [errorMessage, setErrorMsg] = useState("");
+  async function sendImages(event: any) {
+    try {
+      setErrorState(false);
+      setErrorMsg("");
+      event.preventDefault();
+      const data = new FormData(event.target);
+      const req = await fetch("http://localhost:3000/convert", {
+        method: "POST",
+        body: data,
+      });
 
-    if (!req.ok) {
-      throw new Error("somthing wnt wrong");
+      if (!req.ok) {
+        throw new Error("somthing went wrong");
+      }
+
+      const result = await req.json();
+
+      console.log(result);
+    } catch (err) {
+      console.log(err);
+      setErrorState(true);
+      setErrorMsg(err.message);
     }
-
-    const result = await req.json();
-
-    console.log(result);
   }
   return (
     <>
+      {ErrorBox(isError)}
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendImages(e);
-        }}
+        onSubmit={sendImages}
         encType="multipart/form-data"
         className="h-40 self-center grid gap-14 justify-center"
         action="http://localhost:3000/convert"
@@ -34,6 +50,7 @@ function ImageSendForm() {
           className="border-2 hover:bg-gray-200 border-dashed h-36 grid content-center justify-center border-slate-500 rounded-md text-center p-4"
           type="file"
           id=""
+          name="images"
         />
         <input
           className="bg-blue-600 text-white rounded-md w-48 justify-self-center cursor-pointer hover:bg-blue-700"
