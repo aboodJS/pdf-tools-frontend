@@ -26,7 +26,21 @@ function ImageSendForm() {
         throw new Error("somthing went wrong");
       }
 
-      const result = await req.json();
+      const result = await req
+        .blob()
+        .then((file) => {
+          const url = window.URL.createObjectURL(file);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "out.pdf";
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          window.URL.revokeObjectURL(url);
+        })
+        .catch((err) => {
+          throw err;
+        });
 
       console.log(result);
     } catch (err) {
@@ -37,7 +51,7 @@ function ImageSendForm() {
   }
   return (
     <>
-      {ErrorBox(isError)}
+      {ErrorBox(isError, errorMessage)}
       <form
         onSubmit={sendImages}
         encType="multipart/form-data"
