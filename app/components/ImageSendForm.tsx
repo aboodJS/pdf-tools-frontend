@@ -2,7 +2,15 @@ import { useState } from "react";
 
 function ErrorBox(isTrue: boolean, msg: String) {
   if (isTrue) {
-    return <p>{msg}</p>;
+    return <p className="text-center font-bold text-2xl">{msg}</p>;
+  }
+
+  return null;
+}
+
+function LoadingBox(state: boolean) {
+  if (state) {
+    return <p className="text-center">loading</p>;
   }
 
   return null;
@@ -11,8 +19,10 @@ function ErrorBox(isTrue: boolean, msg: String) {
 function ImageSendForm() {
   const [isError, setErrorState] = useState(false);
   const [errorMessage, setErrorMsg] = useState("");
+  const [isLoading, setLoading] = useState(false);
   async function sendImages(event: any) {
     try {
+      setLoading(true);
       setErrorState(false);
       setErrorMsg("");
       event.preventDefault();
@@ -41,16 +51,17 @@ function ImageSendForm() {
         .catch((err) => {
           throw err;
         });
-
-      console.log(result);
+      setLoading(false);
     } catch (err) {
       console.log(err);
       setErrorState(true);
       setErrorMsg(err.message);
+      setLoading(false);
     }
   }
   return (
     <>
+      {LoadingBox(isLoading)}
       {ErrorBox(isError, errorMessage)}
       <form
         onSubmit={sendImages}
