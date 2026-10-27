@@ -1,22 +1,8 @@
 import { useState } from "react";
+import ErrorBox from "./ErrorBox";
+import LoadingBox from "./LoadingBox";
 
-function ErrorBox(isTrue: boolean, msg: String) {
-  if (isTrue) {
-    return <p className="text-center font-bold text-2xl">{msg}</p>;
-  }
-
-  return null;
-}
-
-function LoadingBox(state: boolean) {
-  if (state) {
-    return <p className="text-center">loading</p>;
-  }
-
-  return null;
-}
-
-function ImageSendForm() {
+function ImageSendForm(props: object) {
   const [isError, setErrorState] = useState(false);
   const [errorMessage, setErrorMsg] = useState("");
   const [isLoading, setLoading] = useState(false);
@@ -27,7 +13,7 @@ function ImageSendForm() {
       setErrorMsg("");
       event.preventDefault();
       const data = new FormData(event.target);
-      const req = await fetch("http://localhost:3000/convert", {
+      const req = await fetch(`http://localhost:3000/${props.endpoint}`, {
         method: "POST",
         body: data,
       });
@@ -61,13 +47,12 @@ function ImageSendForm() {
   }
   return (
     <>
-      {LoadingBox(isLoading)}
-      {ErrorBox(isError, errorMessage)}
+      <LoadingBox state={isLoading}></LoadingBox>
+      <ErrorBox msg={errorMessage} isTrue={isError}></ErrorBox>
       <form
         onSubmit={sendImages}
         encType="multipart/form-data"
         className="h-40 self-center grid gap-14 justify-center"
-        action="http://localhost:3000/convert"
         method="post"
       >
         <input

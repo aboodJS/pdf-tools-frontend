@@ -14,8 +14,10 @@ export default function Home() {
     <>
       <main className="h-screen">
         <NavBar></NavBar>
-        <h1 className="text-center my-8 text-4xl font-extrabold">pdf tools</h1>
-        <ImageSendForm></ImageSendForm>
+        <h1 className="text-center my-8 text-4xl font-extrabold">
+          Images to PDF
+        </h1>
+        <ImageSendForm endpoint="convert"></ImageSendForm>
       </main>
     </>
   );
